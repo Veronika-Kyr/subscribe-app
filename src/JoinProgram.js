@@ -5,10 +5,7 @@ export default function JoinProgram() {
     const [email, setEmail] = useState('');
     const [clickedSubBTN, setclickedSubBTN] = useState(false);
     const [clickedunSubBTN, setclickedunSubBTN] = useState(false);
-    const [emailClass, setEmailClass] = useState('joinMail');
-    const [subBtnClass, setsubBtnClass] = useState('joinBtns');
-    const [unsubBtnClass, setunsubBtnClass] = useState('dispNone');
-
+    const [isSubscribed, setIsSubscribed] = useState(false);
     const [disabledBtn, setdisabledBtn] = useState(false);
 
     useEffect(() => {
@@ -27,17 +24,19 @@ export default function JoinProgram() {
             .then((data) => {
                 if (data.error) {
                     window.alert(data.error);
-                    unsubscribing();
+                    setclickedSubBTN(false);
+                    unsubscribeView();
                     throw Error();
                 }
                 else {
-                    subscribing();
+                    subscribeView();
                     console.log(data);
                 }
             })
             .catch(error => {
                 console.log(error);
-                unsubscribing();
+                unsubscribeView();
+                setclickedSubBTN(false);
             })
     }, [clickedSubBTN]);
 
@@ -55,11 +54,13 @@ export default function JoinProgram() {
         })
             .then((resp) => resp.json())
             .then((data) => {
-                unsubscribing();
+                unsubscribeView();
                 console.log(data);
             })
             .catch(error => {
                 console.log(error);
+                subscribeView();
+                setclickedunSubBTN(false);
             })
     }, [clickedunSubBTN]);
 
@@ -67,19 +68,15 @@ export default function JoinProgram() {
         setEmail(event.target.value);
     }
 
-    function subscribing() {
+    function subscribeView() {
         setdisabledBtn(false);
-        setEmailClass('dispNone');
-        setsubBtnClass('dispNone');
-        setunsubBtnClass('joinBtns');
+        setIsSubscribed(true);
         setclickedSubBTN(false);
     }
 
-    function unsubscribing() {
+    function unsubscribeView() {
         setdisabledBtn(false);
-        setEmailClass('joinMail');
-        setsubBtnClass('joinBtns');
-        setunsubBtnClass('dispNone');
+        setIsSubscribed(false);
         setEmail('');
         setclickedunSubBTN(false);
     }
@@ -90,9 +87,9 @@ export default function JoinProgram() {
                 <h2 className='joinHeader'> Join Our Program</h2>
                 <p className='joinText'> Sed do eiusmod tempor incididunt <br /> ut labore et dolore magna aliqua</p>
                 <form className='joinForm'>
-                    <input className={emailClass} placeholder='E-mail' value={email} type="text" onChange={getEmail} />
-                    <input className={subBtnClass} type="submit" value="SUBSCRIBE" disabled={disabledBtn} onClick={(e) => { e.preventDefault(); setclickedSubBTN(true); }} />
-                    <button className={unsubBtnClass} type='submit' disabled={disabledBtn} onClick={(e) => { e.preventDefault(); setclickedunSubBTN(true); }} >UNSUBSCRIBE</button>
+                    {!isSubscribed && (<input className='joinMail' placeholder='E-mail' value={email} type="text" onChange={getEmail} />)}
+                    {!isSubscribed && (<input className='joinBtns' type="submit" value="SUBSCRIBE" disabled={disabledBtn} onClick={(e) => { e.preventDefault(); setclickedSubBTN(true); }} />)}
+                    {isSubscribed && (<button className='joinBtns' type='submit' disabled={disabledBtn} onClick={(e) => { e.preventDefault(); setclickedunSubBTN(true); }} >UNSUBSCRIBE</button>)}
                 </form>
             </div>
         </div>

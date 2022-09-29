@@ -68,7 +68,3 @@
 .joinBtns:disabled {
     opacity: 0.5;
 }
-
-.dispNone {
-    display: none;
-}
